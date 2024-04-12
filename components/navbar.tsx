@@ -151,12 +151,12 @@ export default function Navbar() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {!isLogin && (
-                <Link href="/login">
+                <Link href="/api/auth/signin">
                   <DropdownMenuItem>Login</DropdownMenuItem>
                 </Link>
               )}
               {!isLogin && (
-                <Link href="/signup">
+                <Link href="/api/auth/signin">
                   <DropdownMenuItem>Sign up</DropdownMenuItem>
                 </Link>
               )}
