@@ -12,111 +12,165 @@ import {
 } from "@/components/ui/navigation-menu";
 import { usePathname } from "next/navigation";
 import { Input } from "./ui/input";
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { CircleUser, Menu, Package2, Search } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
-const subjects: { id: number; link: string; name: string }[] = [
-  { id: 1, link: "/thu-vien/toan", name: "Toán" },
-  { id: 2, link: "/thu-vien/ly", name: "Lý" },
-  { id: 3, link: "/thu-vien/hoa", name: "Hóa" },
-  { id: 4, link: "/thu-vien/tin", name: "Tin" },
-];
+import { Separator } from "@/components/ui/separator";
 
-const navItems: { id: number; link: string; name: string }[] = [
-  { id: 1, link: "/dashboard", name: "Trang chính" },
-  { id: 2, link: "/thu-vien", name: "Thư viện" },
-];
+const subjects: { id: number; link: string; name: string; linkName: string }[] =
+  [
+    { id: 1, link: "/thu-vien/toan", name: "Toán", linkName: "toan" },
+    { id: 2, link: "/thu-vien/ly", name: "Lý", linkName: "ly" },
+    { id: 3, link: "/thu-vien/hoa", name: "Hóa", linkName: "hoa" },
+    { id: 4, link: "/thu-vien/tin", name: "Tin", linkName: "tin" },
+  ];
 
-const IsActive = (path: string, till: number) => {
-  const pathname = usePathname().split("/");
-  // console.log(path.split("/").slice(-1));
-  // console.log(pathname.slice(-till));
+const navItems: { id: number; link: string; name: string; linkName: string }[] =
+  [
+    { id: 1, link: "/dashboard", name: "Trang chính", linkName: "dashboard" },
+    { id: 2, link: "/thu-vien", name: "Thư viện", linkName: "thu-vien" },
+  ];
 
-  return path.split("/").slice(-1)[0] === pathname[till];
+const IsActive = (path: string) => {
+  const pathnames = usePathname().split("/");
+  for (let i = 0; i < pathnames.length; ++i) {
+    if (pathnames[i] === path) return true;
+  }
+  return false;
 };
 
-function ListSubjects() {
-  return (
-    <>
-      <div className="flex justify-center gap-6">
-        {subjects.map((subject) => {
-          return (
-            <Button
-              className={`
-              bg-secondary
-              ${
-                IsActive(subject.link, 2)
-                  ? "font-bold bg-primary text-secondary"
-                  : "font-medium bg-secondary text-primary"
-              } hover:bg-primary hover:text-secondary`}
-              key={subject.id}
-            >
-              <Link href={subject.link} legacyBehavior passHref>
-                {subject.name}
-              </Link>
-            </Button>
-          );
-        })}
-      </div>
-    </>
-  );
-}
+export default function Navbar() {
+  const isLogin = false;
 
-function ListNav() {
   return (
     <>
-      <div className="flex flex-row justify-between">
-        <NavigationMenu>
-          <NavigationMenuList className="space-x-6">
-            {navItems.map((item) => {
-              return (
-                <NavigationMenuItem key={item.id} className="">
-                  <Link href={item.link} legacyBehavior passHref>
-                    <NavigationMenuLink
-                      className={`${navigationMenuTriggerStyle()} ${
-                        IsActive(item.link, 1) ? "bg-muted" : ""
+      <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+        <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
+          <Link
+            href="#"
+            className="flex items-center gap-2 text-lg font-semibold md:text-base"
+          >
+            <Package2 className="h-6 w-6" />
+          </Link>
+          {navItems.map((item) => {
+            return (
+              <Link
+                href={item.link}
+                key={item.id}
+                className={`flex items-center gap-2 text-lg font-semibold md:text-base ${
+                  IsActive(item.linkName)
+                    ? "hover:text-foreground border-b-2 border-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {item.name}
+              </Link>
+            );
+          })}
+        </nav>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              className="shrink-0 md:hidden"
+            >
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Toggle navigation menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left">
+            <nav className="grid gap-6 text-lg font-medium">
+              <Link
+                href="#"
+                className="flex items-center gap-2 text-lg font-semibold md:text-base"
+              >
+                <Package2 className="h-6 w-6" />
+              </Link>
+              {navItems.map((item) => {
+                return (
+                  <Link
+                    href={item.link}
+                    key={item.id}
+                    className={`flex items-center gap-2 text-lg font-semibold md:text-base ${
+                      IsActive(item.linkName)
+                        ? "hover:text-foreground border-b-2 border-foreground"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
+              <Separator />
+              {IsActive("thu-vien") &&
+                subjects.map((item) => {
+                  return (
+                    <Link
+                      href={item.link}
+                      key={item.id}
+                      className={`flex items-center gap-2 text-lg font-semibold md:text-base ${
+                        IsActive(item.linkName)
+                          ? "hover:text-foreground border-b-2 border-foreground"
+                          : "text-muted-foreground hover:text-foreground"
                       }`}
                     >
-                      <p
-                        className={`mx-auto text-xl ${
-                          IsActive(item.link, 1) ? "font-bold" : "font-medium"
-                        }`}
-                      >
-                        {item.name}
-                      </p>
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-              );
-            })}
-          </NavigationMenuList>
-        </NavigationMenu>
-
-        <Input type="search" placeholder="Tìm kiếm" className="w-72 mr-11" />
-
-        <div className="flex flex-row gap-6">
-          <ModeToggle />
-          <Button className="w-[80px]">Login</Button>
-          <Button className="w-[80px] bg-secondary">Sign up</Button>
-        </div>
-      </div>
-    </>
-  );
-}
-
-export default function Navbar() {
-  return (
-    <>
-      <div className="border-b bg-background sticky w-full top-0">
-        <div className="container">
-          <header className="h-12 m-2">
-            <ListNav />
-          </header>
-          {IsActive("/thu-vien", 1) && (
-            <div className="pb-4">
-              <ListSubjects />
+                      {item.name}
+                    </Link>
+                  );
+                })}
+            </nav>
+          </SheetContent>
+        </Sheet>
+        <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
+          <form className="ml-auto flex-1 sm:flex-initial">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Tìm kiếm"
+                className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
+              />
             </div>
-          )}
+          </form>
+          <ModeToggle />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="secondary" size="icon" className="rounded-full">
+                <CircleUser className="h-5 w-5" />
+                <span className="sr-only">Toggle user menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {!isLogin && (
+                <Link href="/login">
+                  <DropdownMenuItem>Login</DropdownMenuItem>
+                </Link>
+              )}
+              {!isLogin && (
+                <Link href="/signup">
+                  <DropdownMenuItem>Sign up</DropdownMenuItem>
+                </Link>
+              )}
+
+              {isLogin && <DropdownMenuLabel>My Account</DropdownMenuLabel>}
+              {isLogin && <DropdownMenuSeparator />}
+              {isLogin && <DropdownMenuItem>Settings</DropdownMenuItem>}
+              {isLogin && <DropdownMenuItem>Support</DropdownMenuItem>}
+              {isLogin && <DropdownMenuSeparator />}
+              {isLogin && <DropdownMenuItem>Log out</DropdownMenuItem>}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-      </div>
+      </header>
     </>
   );
 }
